@@ -1,87 +1,24 @@
 # Lab Auth API
 
-A simple authentication REST API built with Node.js, Express, and MySQL.
-
-## Project Overview
-
-This project provides user authentication features including signup, login, logout (token revocation), and profile retrieval. JWT is used for stateless authentication, and tokens can be revoked for logout functionality.
-
-## Setup
-
-1. **Clone the repository**
-
-   git clone (https://github.com/Carl-IS/lab_auth_api.git)
-   cd lab-auth-api
-
-
-2. **Install dependencies**
-
-   npm install
-
-
-3. **Configure environment variables**
-
-   Edit the `.env` file in the root directory:
-
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASS=
-   DB_NAME=lab_auth
-   DB_PORT=3306
-   SERVER_PORT=3000
-
-   JWT_SECRET=replace_with_a_long_random_string
-   JWT_EXPIRES=1h
-
-
-4. **Set up the MySQL database**
-
-    Create the database and tables:
-sql
-    CREATE DATABASE lab_auth;
-    USE lab_auth;
-
-    CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(100) NOT NULL UNIQUE,
-        password_hash VARCHAR(255) NOT NULL,
-        full_name VARCHAR(120),
-        role VARCHAR(30) DEFAULT 'student',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-    CREATE TABLE IF NOT EXISTS revoked_tokens (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        jti VARCHAR(64) NOT NULL UNIQUE,
-        expires_at DATETIME NOT NULL,
-        revoked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-## How to Run
-
-Start the server:
-
-npm start
-
-Or for development with auto-reload:
-
-npm run dev
-
-The API will be available at [http://localhost:3000](http://localhost:3000) (or your configured port).
-
+    INNER JOIN – Returns only rows where there is a match in both tables.
+    LEFT JOIN – Returns all rows from the left table, plus matching rows from the right table (NULL if no match).
+    RIGHT JOIN – Returns all rows from the right table, plus matching rows from the left table (NULL if no match).
+    FULL OUTER JOIN – Returns rows when there is a match in either left or right table (some SQL dialects need UNION for this).
+    CROSS JOIN – Returns the Cartesian product of both tables (every row from the left table combined with every row from the right table).
+    SELF JOIN – A table joined with itself, usually with an alias, to compare rows in the same table.
+    LEFT JOIN + Subquery – A pattern where you join a table with the result of another query.
+    
 ## Endpoints List
 
-| Method | Endpoint             | Description                       |
-|--------|----------------------|-----------------------------------|
-| GET    | `/api/health`        | Health check                      |
-| POST   | `/api/auth/signup`   | Register a new user               |
-| POST   | `/api/auth/login`    | Login and receive JWT token       |
-| POST   | `/api/auth/logout`   | Logout (revoke JWT token)         |
-| GET    | `/api/profile`       | Get authenticated user profile    |
+| Endpoint                        | SQL Concept              | Purpose                                                                 |
+|---------------------------------|--------------------------|-------------------------------------------------------------------------|
+| **GET /reports/users-with-roles**   | INNER JOIN               | Shows users with their assigned roles.                                  |
+| **GET /reports/users-with-profiles**| LEFT JOIN                | Shows users with their profile info (all users, even without profiles). |
+| **GET /reports/roles-right-join**   | RIGHT JOIN               | Shows all roles, including roles not assigned to any user.              |
+| **GET /reports/profiles-full-outer**| FULL OUTER JOIN / UNION  | Shows all users and profiles, whether or not they are linked.           |
+| **GET /reports/user-role-combos**   | CROSS JOIN               | Lists all possible combinations of users and roles.                     |
+| **GET /reports/referrals**          | SELF JOIN                | Shows users who referred other users.                                   |
+| **GET /reports/latest-login**       | LEFT JOIN + Subquery     | Shows each user’s most recent login (or `Never` if no login exists).    |
 
-All `/api/profile` and `/api/auth/logout` endpoints require a valid JWT token in the `Authorization: Bearer <token>` header.
 
-## License
 
-ISC

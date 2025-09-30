@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./config/db');
-
+const reportRoutes = require('./routes/reportRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
@@ -20,3 +20,7 @@ app.use('/api', authRoutes);
 
 const PORT = process.env.SERVER_PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+
+
+// Mount after auth routes:
+app.use('/api', reportRoutes);
